@@ -1,0 +1,61 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+.container {
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+.viewport {
+  width: 70%;
+  height: 100%;
+  flex: 1;
+  display: inline-block;
+}
+.menubar {
+  left: 0px;
+  width: 30%;
+  background: rgb(250, 200, 30);
+  height: 400px;
+  overflow-y: auto;
+  float: left;
+  display: inline-block;
+}
+.menubaritem {
+  margin: 20px 10px 20px 10px;
+  padding: 20px 10px 20px 10px;
+  border-width: 1px;
+  -webkit-text-fill-color: rgb(43, 115, 209);
+  border-radius: 10px;
+}
+.menubaritem:hover {
+  background-color: rgb(207, 137, 45);
+}
+.menubaritem:active {
+  background-color: rgb(211, 111, 111);
+}
+.democontainer {
+  background-color: rgba(55, 163, 196, 0.753);
+  height: 500px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.setting-container {
+  margin: 10px 5px 10px 5px;
+  display: inline-block;
+  font-size: 8px;
+  font-weight: bold;
+}
+.settings-container {
+  text-align: left;
+}
+/* @import url("antd/dist/antd.css"); */
