@@ -92,7 +92,7 @@ export default React.memo(
     const _animation = props.animation || Animated.timing;
     const animation = useMemo(() => {
     const a = _animation(animatedValue, _config)
-    onAnimationInited ({animation, config: _config});
+    onAnimationInited ({config: _config});
     return a;
     }, [
       _animation,
