@@ -1,21 +1,13 @@
 import AnimatedComponent from "../AnimatedComponent";
-import React, {
-  useImperativeHandle,
-  useRef,
-  useMemo,
-  useCallback
-} from "react";
+import React, { useImperativeHandle, useRef, useMemo } from "react";
 import Animated from "../Animated";
-import interpolate from '../decreaseInterpolate'
-export default React.forwardRef(function FadeAnimation(
-  props: any,
-  ref
-) {
+import decreaseInterpolate from "../decreaseInterpolate";
+export default React.forwardRef(function FadeAnimation(props: any, ref) {
   const __ref = useRef({});
 
   const {
-    fromValue,
-    toValue,
+    fromValue: _fromValue,
+    toValue: _toValue,
     style = {},
     ...others
   }: any = props;
@@ -27,41 +19,52 @@ export default React.forwardRef(function FadeAnimation(
     },
     [__ref.current]
   );
-  const {fromValue: fromX, toValue: toX, animatedValue, interpolated} = useMemo(() => {
-    return interpolate({fromValue: fromValue[0], toValue: toValue[0]});
+  const fromValue = [..._fromValue],
+    toValue = [..._toValue];
+  // 如果x值不变就互换x和y，防止fromX和toX相等而y不等时动画不执行。
+  if (fromValue[0] === toValue[0]) {
+    fromValue.reverse();
+    toValue.reverse();
   }
-  ,[fromValue,toValue]);
+  const {
+    fromValue: fromX,
+    toValue: toX,
+    animatedValue,
+    interpolated
+  } = useMemo(() => {
+    // animated的fromValue和toValue不支持递减值，这里处理一下，保证from和to是递增的
+    return decreaseInterpolate({
+      fromValue: fromValue[0],
+      toValue: toValue[0]
+    });
+  }, [fromValue, toValue]);
   const animatedY = useMemo(() => {
-      return animatedValue.interpolate({
-        inputRange:[fromX, toX],
-        outputRange: [fromValue[1], toValue[1]]
-      })
-  }, [animatedValue]);
+    return animatedValue.interpolate({
+      inputRange: [fromX, toX],
+      outputRange: [fromValue[1], toValue[1]]
+    });
+  }, [animatedValue, fromX, toX]);
   const _style = useMemo(
     () => ({
       ...style,
       transform: [
         {
+          // translatex和translatey必须要这样分开写，否则动画只会作用在x或y上
           translateX: interpolated
-        },{
+        },
+        {
           translateY: animatedY
         }
       ]
     }),
     [animatedValue]
   );
-  // const animationFunc = useCallback((val, configs) => {
-  //   const { toValue } = configs;
-  //   if (Array.isArray(toValue)) {
-  //     return Animated.timing(val, {
-  //       ...configs,
-  //       toValue: toValue[0]
-  //     });
-  //   } else {
-  //     return Animated.timing(val, configs);
-  //   }
-  // }, []);
-  if(!(Array.isArray(fromValue) && Array.isArray(toValue)) || fromValue.length !== 2 || toValue.length !==2)return null;
+  if (
+    !(Array.isArray(fromValue) && Array.isArray(toValue)) ||
+    fromValue.length !== 2 ||
+    toValue.length !== 2
+  )
+    return null;
 
   return (
     <AnimatedComponent

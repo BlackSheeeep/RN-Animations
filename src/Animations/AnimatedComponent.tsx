@@ -8,6 +8,7 @@ import React, {
   useRef,
   useState
 } from "react";
+import getReverseAnimation from "./getReverseAnimation";
 type EasingType = [string /*函数名*/] | Function;
 function isCuryFunction(easingName): boolean {
   const curyMap = ["elastic", "in", "out", "inOut", "bezier"];
@@ -58,6 +59,7 @@ export default React.memo(
       animatedValue,
       iterations = -1,
       resetBeforeIteration = true,
+      autoBack = false,
       loop,
       ...others
     } = props;
@@ -91,15 +93,27 @@ export default React.memo(
     };
     const _animation = props.animation || Animated.timing;
     const animation = useMemo(() => {
-    const a = _animation(animatedValue, _config)
-    onAnimationInited ({config: _config});
-    return a;
-    }, [
-      _animation,
-      animatedValue
-    ]);
+      const a = _animation(animatedValue, _config);
+      return a;
+    }, [_animation, animatedValue]);
+    const reverseAnimation = useMemo(() => {
+      return getReverseAnimation({
+        animatedValue,
+        config: _config,
+        initAnimation: _animation
+      });
+    }, [animation]);
+    const __reverseStart = function (cb?) {
+      reverseAnimation.start(() => {
+        cb && cb();
+      });
+    };
+    const __reverseStop = function () {
+      reverseAnimation.stop();
+    };
     const __start = function (cb?) {
       animation.start(() => {
+        autoBack && !loop && reverseAnimation.start();
         onAnimationEnd();
         cb && cb();
       });
@@ -110,6 +124,7 @@ export default React.memo(
     };
     const __reset = function () {
       animation.reset();
+      reverseAnimation.reset();
     };
     const loopedAnimation = useMemo(
       () => Animated.loop(animation, { iterations, resetBeforeIteration }),
@@ -131,14 +146,20 @@ export default React.memo(
           reset() {
             __reset();
           },
+          reverseStart(cb?) {
+            __reverseStart(cb);
+          },
+          reverseStop() {
+            __reverseStop();
+          },
           getAnimation() {
             return animation;
           },
           getAnimatedValue() {
             return animatedValue;
           },
-          resetAnimation(){
-
+          getReverseAnimation() {
+            return reverseAnimation;
           }
         };
         return ret;

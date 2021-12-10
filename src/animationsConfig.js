@@ -8,7 +8,7 @@ export default {
       useNativeDriver: false,
       loop: false,
       autoStart: true,
-      delay: 1000,
+      delay: 1000
     },
     component: "FadeAnimation",
     color: "green",
@@ -18,10 +18,11 @@ export default {
     name: "平移",
     color: "pink",
     defaultProps: {
-      fromValue: [0,0],
-      toValue: [100, 100],
+      fromValue: [0, 0],
+      toValue: [0, 100],
       duration: 3000,
       delay: 1000,
+      autoBack: true,
       useNativeDriver: false,
       loop: false,
       autoStart: true
@@ -33,12 +34,12 @@ export default {
     name: "旋转",
     defaultProps: {
       fromValue: 0,
-      toValue: 180,
+      toValue: -180,
       delay: 0,
       duration: 3000,
       autoStart: true,
       loop: false,
-      rotateCenter: 'z',
+      rotateCenter: "z",
       useNativeDriver: false
     },
     component: "RotateAnimation",
@@ -49,30 +50,31 @@ export default {
     name: "拖拽",
     defaultProps: {
       velocity: 0.01,
-      bezier: [0.02,0.95, 0.54, 1]
+      bezier: [0.02, 0.95, 0.54, 1]
     },
     component: "DragAnimation",
-    color: 'rgb(111,233,0)',
+    color: "rgb(111,233,0)",
     centerName: ""
   },
   Scale: {
-    name:'缩放',
+    name: "缩放",
     defaultProps: {
-      fromValue: [1,1],
-      toValue: [2,.5],
+      fromValue: [1, 1],
+      toValue: [2, 0.5],
       duration: 1000,
       loop: false,
       autoStart: true,
-      delay: 0
+      delay: 0,
+      autoBack: true
     },
     component: "ScaleAnimation",
-    color: 'rgb(233,155,12)',
+    color: "rgb(233,155,12)",
     centerName: "scale"
   },
   Drawer: {
-    name: '抽屉',
+    name: "抽屉",
     defaultProps: {
-      fromVector: 'bottom',
+      fromVector: "bottom",
       loop: false,
       autoStart: true,
       delay: 500,
@@ -81,10 +83,9 @@ export default {
       width: 200,
       autoBack: true,
       useNativeDriver: false
-
     },
     component: "DrawerAnimation",
-    color: '#ffffff',
-    centerName: 'Drawer'
+    color: "#ffffff",
+    centerName: "Drawer"
   }
 };
