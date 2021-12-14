@@ -1,3 +1,26 @@
+const validateType = function (val) {
+  if (typeof val !== "object") {
+    return typeof val;
+  } else {
+    console.log("woifejaoiefjoawfoa", val);
+    if (Array.isArray(val)) {
+      const type = val
+        .map((item) => (isNaN(item) ? "NaN" : typeof item))
+        .toString();
+      return "[" + type + "]";
+    }
+  }
+};
+function commonValidate(val) {
+  if (this.required && !val && val !== 0 && val !== false) {
+    this.validateStatus = "error";
+    this.help = "必填项";
+    return this;
+  }
+  this.validateStatus = validateType(val) === this.type ? "success" : "error";
+  this.help = this.validateStatus === "success" ? "" : "类型必须为" + this.type;
+  return this;
+}
 export default {
   FadeInOrOut: {
     name: "渐进或渐出",
@@ -18,14 +41,30 @@ export default {
     name: "平移",
     color: "pink",
     defaultProps: {
-      fromValue: [0, 0],
-      toValue: [0, 100],
+      fromValue: [-100, 0],
+      toValue: [0, -100],
       duration: 3000,
       delay: 1000,
       autoBack: true,
       useNativeDriver: false,
       loop: false,
       autoStart: true
+    },
+    forms: {
+      fromValue: {
+        type: "[number,number]",
+        validate: commonValidate,
+        validateStatus: "success",
+        help: "",
+        required: true
+      },
+      toValue: {
+        type: "[number,number]",
+        validate: commonValidate,
+        validateStatus: "success",
+        help: "",
+        required: true
+      }
     },
     component: "TransAnimation",
     centerName: "trans"
@@ -39,8 +78,9 @@ export default {
       duration: 3000,
       autoStart: true,
       loop: false,
-      rotateCenter: "z",
-      useNativeDriver: false
+      rotateCenter: ["z", "y"],
+      useNativeDriver: false,
+      autoBack: true
     },
     component: "RotateAnimation",
     color: "blue",
@@ -57,10 +97,10 @@ export default {
     centerName: ""
   },
   Scale: {
-    name: "缩放",
+    name: "等比缩放",
     defaultProps: {
       fromValue: [1, 1],
-      toValue: [2, 0.5],
+      toValue: [4, 1],
       duration: 1000,
       loop: false,
       autoStart: true,
@@ -74,7 +114,7 @@ export default {
   Drawer: {
     name: "抽屉",
     defaultProps: {
-      fromVector: "bottom",
+      fromDirection: "bottom",
       loop: false,
       autoStart: true,
       delay: 500,
@@ -86,6 +126,37 @@ export default {
     },
     component: "DrawerAnimation",
     color: "#ffffff",
-    centerName: "Drawer"
+    centerName: "Drawer",
+    forms: {
+      fromDirection: {
+        type: "string",
+        desc: "抽屉动画组件在容器上的出现方向",
+        validateStatus: "success",
+        required: false,
+        validate(val) {
+          commonValidate.call(this, val);
+          this.validateStatus = "^(bottom|left|right|top)$".test(val)
+            ? "success"
+            : "error";
+          this.help =
+            this.validateStatus === "success"
+              ? "fromDirection只支持bottom left right top四个值"
+              : "";
+          return this;
+        },
+        help: ""
+      }
+    }
+  },
+
+  commonForms: {
+    loop: {
+      required: false,
+      validateStatus: "success",
+      type: "boolean",
+      validate: commonValidate,
+      help: "",
+      desc: "控制动画是否循环播放"
+    }
   }
 };

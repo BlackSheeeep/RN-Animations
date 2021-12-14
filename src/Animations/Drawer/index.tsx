@@ -10,7 +10,7 @@ export default React.forwardRef(function FadeAnimation(props: any, ref) {
   const DEFAULT_WIDTH = WINDOW.width;
   const {
     style = {},
-    fromVector = "bottom",
+    fromDirection = "bottom",
     height = DEFAULT_HEIGHT,
     width = DEFAULT_WIDTH,
     ...others
@@ -21,16 +21,13 @@ export default React.forwardRef(function FadeAnimation(props: any, ref) {
     ref,
     () => {
       const ret = Object.create(__ref.current);
-      ret.getReverseAnimation = () => {
-        return reverseAnimation.current;
-      };
       // 继承AnimatedComponent中的方法，这里可以重写或者添加新方法。
-      return;
+      return ret;
     },
     [__ref.current]
   );
   const animatedValue = useMemo(() => {
-    switch (fromVector) {
+    switch (fromDirection) {
       case "bottom":
         toValue = 0;
         return new Animated.Value(-height);
@@ -44,7 +41,7 @@ export default React.forwardRef(function FadeAnimation(props: any, ref) {
         toValue = 0;
         return new Animated.Value(-width);
     }
-  }, [fromVector, height, width]);
+  }, [fromDirection, height, width]);
   const _style = useMemo(
     () => ({
       ...style,
@@ -54,7 +51,7 @@ export default React.forwardRef(function FadeAnimation(props: any, ref) {
       backgroundColor: style.backgroundColor
         ? style.backgroundColor
         : "#ffffff",
-      [fromVector]: animatedValue
+      [fromDirection]: animatedValue
     }),
     [animatedValue]
   );

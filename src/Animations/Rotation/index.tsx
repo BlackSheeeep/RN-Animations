@@ -1,14 +1,17 @@
 import AnimatedComponent from "../AnimatedComponent";
 import React, { useImperativeHandle, useRef, useMemo } from "react";
 import Animated from "../Animated";
-import decreaseInterpolate from '../decreaseInterpolate';
-export default React.forwardRef(function FadeAnimation(
-  props: any,
-  ref
-) {
+import { decreaseInterpolate } from "../decreaseInterpolate";
+export default React.forwardRef(function FadeAnimation(props: any, ref) {
   const __ref = useRef({});
 
-  const { fromValue, style = {},rotateCenter = 'z',toValue, ...others  } = props;
+  const {
+    fromValue,
+    style = {},
+    rotateCenter = "z",
+    toValue,
+    ...others
+  } = props;
   useImperativeHandle(
     ref,
     () => {
@@ -17,9 +20,10 @@ export default React.forwardRef(function FadeAnimation(
     },
     [__ref.current]
   );
-  const {animatedValue, fromValue: from, toValue: to} = useMemo(() => decreaseInterpolate({fromValue,toValue}), [
-    fromValue
-  ]);
+  const { animatedValue, fromValue: from, toValue: to } = useMemo(
+    () => decreaseInterpolate({ fromValue, toValue }),
+    [fromValue]
+  );
   const rotate = useMemo(
     () =>
       animatedValue.interpolate({
@@ -31,12 +35,11 @@ export default React.forwardRef(function FadeAnimation(
   const _style = useMemo(
     () => ({
       ...style,
-      transform: [
-        {
-          ["rotate" + rotateCenter.toUpperCase()]: rotate,
-          
-        }
-      ]
+      transform: rotateCenter.map((r) => {
+        return {
+          ["rotate" + r.toUpperCase()]: rotate
+        };
+      })
     }),
     [rotate, rotateCenter]
   );

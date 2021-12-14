@@ -55,7 +55,6 @@ export default React.memo(
       onAnimationStart = () => {},
       onAnimationEnd = () => {},
       onAnimatedValueChanged = () => {},
-      onAnimationInited = () => {},
       animatedValue,
       iterations = -1,
       resetBeforeIteration = true,
